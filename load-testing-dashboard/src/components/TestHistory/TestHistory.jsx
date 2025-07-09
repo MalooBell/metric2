@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ClockIcon, 
   ChartBarIcon, 
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   TrashIcon,
   EyeIcon
 } from '@heroicons/react/24/outline';
@@ -212,7 +212,7 @@ const TestHistory = () => {
                           className="text-green-600 hover:text-green-900"
                           title="Ouvrir Locust"
                         >
-                          <ExternalLinkIcon className="h-4 w-4" />
+                          <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                         </a>
                       </div>
                     </td>
