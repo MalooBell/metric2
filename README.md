@@ -66,7 +66,7 @@ cd load-testing-dashboard
 npm install
 
 # Installer les dépendances frontend
-cd load-testing-dashboard
+cd frontend
 npm install
 cd ..
 ```
@@ -163,7 +163,7 @@ Modifier `prometheus/prometheus.yml` pour ajouter de nouvelles sources de métri
 ```
 ├── server/                 # Backend Node.js
 │   └── index.js           # API principale
-├── load-testing-dashboard/ # Frontend Angular
+├── frontend/              # Frontend React
 │   ├── src/app/           # Composants Angular
 │   └── src/services/      # Services (API, WebSocket)
 ├── locust/                # Configuration Locust
@@ -174,7 +174,7 @@ Modifier `prometheus/prometheus.yml` pour ajouter de nouvelles sources de métri
 
 ### Ajouter des Fonctionnalités
 1. **Backend** : Ajouter des routes dans `server/index.js`
-2. **Frontend** : Créer des composants dans `load-testing-dashboard/src/app/`
+2. **Frontend** : Créer des composants dans `frontend/src/`
 3. **Base de données** : Modifier le schéma SQLite dans `server/index.js`
 
 ## Contribution
