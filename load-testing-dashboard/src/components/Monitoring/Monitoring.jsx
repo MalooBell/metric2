@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   ChartBarIcon, 
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   ArrowPathIcon 
 } from '@heroicons/react/24/outline';
 
@@ -92,7 +92,7 @@ const Monitoring = () => {
               rel="noopener noreferrer"
               className="flex items-center space-x-1 px-3 py-1 text-sm text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
             >
-              <ExternalLinkIcon className="h-4 w-4" />
+              <ArrowTopRightOnSquareIcon className="h-4 w-4" />
               <span>Ouvrir dans un nouvel onglet</span>
             </a>
           </div>

@@ -4,7 +4,7 @@ import {
   ChartBarIcon, 
   ClockIcon,
   EllipsisVerticalIcon,
-  ExternalLinkIcon
+  ArrowTopRightOnSquareIcon
 } from '@heroicons/react/24/outline';
 import { cn } from '../../utils/cn';
 
@@ -92,7 +92,7 @@ const Header = ({ currentTab, onTabChange, isTestRunning }) => {
                     className="flex items-center justify-between px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                   >
                     <span className={link.color}>{link.label}</span>
-                    <ExternalLinkIcon className="h-4 w-4 text-gray-400" />
+                    <ArrowTopRightOnSquareIcon className="h-4 w-4 text-gray-400" />
                   </a>
                 ))}
               </div>
