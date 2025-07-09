@@ -9,7 +9,7 @@ class WebSocketService {
 
   connect() {
     try {
-      this.ws = new WebSocket('ws://localhost:8080');
+      this.ws = new WebSocket(import.meta.env.VITE_WS_URL || 'ws://localhost:8080');
       
       this.ws.onopen = () => {
         console.log('WebSocket connecté');
