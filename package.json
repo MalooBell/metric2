@@ -2,11 +2,12 @@
   "name": "load-testing-dashboard-backend",
   "version": "1.0.0",
   "description": "Load Testing Dashboard Backend",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "dev": "nodemon server/index.js",
-    "build-frontend": "cd load-testing-dashboard && npm run build",
-    "serve-frontend": "cd load-testing-dashboard && npm start"
+    "start": "node server/index.js",
+    "build-frontend": "cd frontend && npm run build",
+    "serve-frontend": "cd frontend && npm run dev"
   },
   "keywords": [],
   "author": "",
