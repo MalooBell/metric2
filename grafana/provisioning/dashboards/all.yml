@@ -4,4 +4,4 @@ providers:
     folder: ENEO-Perf
     type: file
     options:
-      path: /var/lib/grafana/dashboards
+      path: /etc/grafana/provisioning/dashboards

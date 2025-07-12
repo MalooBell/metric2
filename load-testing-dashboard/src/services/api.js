@@ -70,6 +70,18 @@ export const metricsService = {
     }
   },
 
+   /**
+   * Exécute une requête PromQL via le backend.
+   * @param {string} query - La requête PromQL.
+   * @returns {Promise<object>}
+   */
+  query: async (query) => {
+    const response = await api.get('/metrics/query', {
+      params: { query },
+    });
+    return response.data;
+  },
+
   // Obtenir les métriques Locust
   getLocustMetrics: async () => {
     try {

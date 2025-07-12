@@ -3,7 +3,6 @@ import {
   ClockIcon, 
   ChartBarIcon, 
   ArrowTopRightOnSquareIcon,
-  TrashIcon,
   EyeIcon
 } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
@@ -46,12 +45,14 @@ const TestHistory = () => {
   };
 
   const formatDuration = (startTime, endTime) => {
-    if (!startTime) return '-';
+    if (!startTime || !endTime) return '-';
     
     const start = new Date(startTime);
-    const end = endTime ? new Date(endTime) : new Date();
+    const end = new Date(endTime);
     const durationMs = end - start;
     
+    if (durationMs < 0) return 'N/A';
+
     const minutes = Math.floor(durationMs / 60000);
     const seconds = Math.floor((durationMs % 60000) / 1000);
     
@@ -62,6 +63,7 @@ const TestHistory = () => {
     if (!test.start_time) return;
     
     const startTime = new Date(test.start_time).getTime();
+    // Utilise l'heure de fin si elle existe, sinon l'heure actuelle
     const endTime = test.end_time ? new Date(test.end_time).getTime() : Date.now();
     
     const grafanaUrl = `http://localhost:3000/d/locust-dashboard?from=${startTime}&to=${endTime}`;
@@ -175,7 +177,7 @@ const TestHistory = () => {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {test.avg_response_time ? (
+                        {test.avg_response_time != null ? (
                           <div className="space-y-1">
                             <div>Temps: {Math.round(test.avg_response_time)}ms</div>
                             <div>RPS: {test.requests_per_second?.toFixed(1) || 0}</div>
@@ -227,74 +229,63 @@ const TestHistory = () => {
       {/* Modal détails test */}
       {selectedTest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+            <div className="p-6 border-b">
+              <div className="flex items-start justify-between">
                 <h3 className="text-lg font-medium text-gray-900">
                   Détails du test: {selectedTest.name}
                 </h3>
                 <button
                   onClick={() => setSelectedTest(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-1 rounded-full hover:bg-gray-200"
                 >
-                  ×
+                  <span className="text-2xl text-gray-500">&times;</span>
                 </button>
               </div>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div>
+                  <p className="font-semibold text-gray-700">Configuration</p>
+                  <dl className="mt-2 space-y-2">
+                    <div className="flex justify-between"><dt className="text-gray-500">URL cible</dt><dd className="font-medium text-right">{selectedTest.target_url}</dd></div>
+                    <div className="flex justify-between"><dt className="text-gray-500">Utilisateurs</dt><dd className="font-medium">{selectedTest.users}</dd></div>
+                    <div className="flex justify-between"><dt className="text-gray-500">Vitesse d'apparition</dt><dd className="font-medium">{selectedTest.spawn_rate}/s</dd></div>
+                    <div className="flex justify-between"><dt className="text-gray-500">Durée configurée</dt><dd className="font-medium">{selectedTest.duration === 0 ? 'Illimitée' : `${selectedTest.duration}s`}</dd></div>
+                  </dl>
+                </div>
+                
+                <div>
+                  <p className="font-semibold text-gray-700">Résultats Agrégés</p>
+                   {selectedTest.total_requests != null ? (
+                    <dl className="mt-2 space-y-2">
+                      <div className="flex justify-between"><dt className="text-gray-500">Total requêtes</dt><dd className="font-medium">{selectedTest.total_requests.toLocaleString()}</dd></div>
+                      <div className="flex justify-between"><dt className="text-gray-500">Total échecs</dt><dd className="font-medium">{selectedTest.total_failures?.toLocaleString() || 0}</dd></div>
+                      <div className="flex justify-between"><dt className="text-gray-500">Temps réponse moyen</dt><dd className="font-medium">{Math.round(selectedTest.avg_response_time)} ms</dd></div>
+                      <div className="flex justify-between"><dt className="text-gray-500">Requêtes / sec</dt><dd className="font-medium">{selectedTest.requests_per_second?.toFixed(2) || '0.00'}</dd></div>
+                      <div className="flex justify-between"><dt className="text-gray-500">Taux d'erreur</dt><dd className="font-medium">{selectedTest.error_rate?.toFixed(2) || '0.00'} %</dd></div>
+                    </dl>
+                   ) : <p className="text-gray-500 mt-2">Aucune statistique finale enregistrée.</p>}
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t flex justify-end space-x-3">
+              <button
+                onClick={() => openInGrafana(selectedTest)}
+                className="btn-primary"
+              >
+                <ChartBarIcon className="h-4 w-4 mr-2" />
+                Ouvrir dans Grafana
+              </button>
               
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-gray-500">URL cible</p>
-                  <p className="font-medium">{selectedTest.target_url}</p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-500">Utilisateurs</p>
-                  <p className="font-medium">{selectedTest.users}</p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-500">Vitesse d'apparition</p>
-                  <p className="font-medium">{selectedTest.spawn_rate}/s</p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-500">Durée configurée</p>
-                  <p className="font-medium">
-                    {selectedTest.duration === 0 ? 'Illimitée' : `${selectedTest.duration}s`}
-                  </p>
-                </div>
-                
-                {selectedTest.total_requests && (
-                  <>
-                    <div>
-                      <p className="text-gray-500">Total requêtes</p>
-                      <p className="font-medium">{selectedTest.total_requests.toLocaleString()}</p>
-                    </div>
-                    
-                    <div>
-                      <p className="text-gray-500">Temps de réponse moyen</p>
-                      <p className="font-medium">{Math.round(selectedTest.avg_response_time)}ms</p>
-                    </div>
-                  </>
-                )}
-              </div>
-              
-              <div className="mt-6 flex justify-end space-x-3">
-                <button
-                  onClick={() => openInGrafana(selectedTest)}
-                  className="btn-primary"
-                >
-                  <ChartBarIcon className="h-4 w-4 mr-2" />
-                  Ouvrir dans Grafana
-                </button>
-                
-                <button
-                  onClick={() => setSelectedTest(null)}
-                  className="btn-outline"
-                >
-                  Fermer
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedTest(null)}
+                className="btn-outline"
+              >
+                Fermer
+              </button>
             </div>
           </div>
         </div>
